@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:netflix_app/repositories/data_repository.dart';
-import 'package:netflix_app/ui/screens/home_screen.dart';
+import '../../repositories/data_repository.dart';
+import '../../ui/screens/loading_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => DataRepository(),
-    child: const MyApp(),
-  ));
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => DataRepository(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Netflix Sn',
+      title: 'My Netflix App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const LoadingScreen(),
     );
   }
 }

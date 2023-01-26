@@ -1,29 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:netflix_app/models/movie.dart';
-import 'package:netflix_app/repositories/data_repository.dart';
 import 'package:provider/provider.dart';
-import '/utils/constants.dart';
+import '../../repositories/data_repository.dart';
+import '../../ui/widgets/movie_card.dart';
+import '../../ui/widgets/movie_category.dart';
+import '../../utils/constant.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Movie>? movies;
-
   @override
   void initState() {
     super.initState();
-    getMovies();
-  }
-
-  void getMovies() async {
-    final dataProvider = Provider.of<DataRepository>(context, listen: false);
-    await dataProvider.getPopularMovies();
   }
 
   @override
@@ -33,53 +25,42 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
         backgroundColor: kBackgroundColor,
-        leading: Image.asset("assets/images/netflix_logo_2.png"),
+        leading: Image.asset('assets/images/netflix_logo_2.png'),
       ),
       body: ListView(
         children: [
-          Container(
-              height: 500,
-              color: Colors.red,
-              child: dataProvider.popularMovieiLst.isEmpty
-                  ? const Center(child: Text('Not Movie'))
-                  : Image.network(
-                      dataProvider.popularMovieiLst[0].posterPathUrl(),
-                      fit: BoxFit.cover,
-                    )),
-          const SizedBox(
-            height: 15,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Tendances Actuelles",
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
           SizedBox(
-            height: 160,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    color: Colors.yellowAccent,
-                    width: 100,
-                    child: dataProvider.popularMovieiLst.isEmpty
-                        ? Center(child: Text(index.toString()))
-                        : Image.network(
-                            dataProvider.popularMovieiLst[index]
-                                .posterPathUrl(),
-                            fit: BoxFit.cover,
-                          ),
-                  );
-                }),
-          )
+            height: 500,
+            child: MovieCard(movie: dataProvider.popularMovieList.first),
+          ),
+          MovieCategory(
+            imageHeight: 160,
+            imageWidth: 110,
+            label: 'Tendances Actuelles',
+            movieList: dataProvider.popularMovieList,
+            callback: dataProvider.getPopularMovies,
+          ),
+          MovieCategory(
+            imageHeight: 320,
+            imageWidth: 220,
+            label: 'Actuellement au cinéma',
+            movieList: dataProvider.nowPlaying,
+            callback: dataProvider.getNowPlaying,
+          ),
+          MovieCategory(
+            imageHeight: 160,
+            imageWidth: 110,
+            label: 'Ils arrivent bientôt',
+            movieList: dataProvider.upcomingMovies,
+            callback: dataProvider.getUpcomingMovies,
+          ),
+          MovieCategory(
+            imageHeight: 320,
+            imageWidth: 220,
+            label: 'Animations',
+            movieList: dataProvider.animationMovies,
+            callback: dataProvider.getAnimationMovies,
+          ),
         ],
       ),
     );
